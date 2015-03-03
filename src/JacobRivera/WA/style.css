@@ -1,0 +1,20 @@
+.root {
+    -fx-background-color: aliceblue;
+}
+#title {
+    -fx-font-size: 32px;
+    -fx-font-family: "Arial Black";
+    -fx-fill: #818181;
+    -fx-effect: dropshadow(three-pass-box, gray, 6, 0, 0, 1);
+}
+
+#smallTitle {
+    -fx-font-size: 20px;
+    -fx-fill: brown;
+}
+
+#result {
+    -fx-alignment: center;
+    -fx-font-size: 14px;
+    -fx-fill: black;
+}
