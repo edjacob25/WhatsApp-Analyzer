@@ -1,5 +1,8 @@
 package JacobRivera.WA;
 
+import org.jfree.data.category.DefaultCategoryDataset;
+import org.jfree.data.general.Dataset;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -105,5 +108,14 @@ public class ConversationData {
 
     public float getDailyAvg() {
         return (float) getTotalMessages() / days.size();
+    }
+
+    public Dataset getLinearDataSet() {
+        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+        for (Date iterator : days.keySet()) {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            dataset.addValue(days.get(iterator),"days",sdf.format(iterator));
+        }
+        return dataset;
     }
 }

@@ -11,7 +11,16 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.ChartUtilities;
+import org.jfree.chart.JFreeChart;
+import org.jfree.data.category.CategoryDataset;
+import org.jfree.data.category.DefaultCategoryDataset;
+import org.jfree.graphics2d.svg.SVGGraphics2D;
+import org.jfree.graphics2d.svg.SVGUtils;
 
+import java.awt.*;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -85,6 +94,23 @@ public class Main extends Application {
                             monthTF.setText(mt);
                             monthMsg.setText(data.getMonthData(mt)+"");
 
+                            JFreeChart line = ChartFactory.createLineChart("Mensajes por dia","LOl","algo", (CategoryDataset) data.getLinearDataSet());
+                            int width = 2000; /* Width of the image */
+                            int height = 1000; /* Height of the image */
+                            File lineChart = new File( "char.jpeg" );
+
+                            SVGGraphics2D g2 = new SVGGraphics2D(600, 400);
+                            g2.setRenderingHint(JFreeChart.KEY_SUPPRESS_SHADOW_GENERATION, true);
+                            Rectangle r = new Rectangle(0, 0, 600, 400);
+                            line.draw(g2, r);
+                            File f = new File("char.svg");
+                            try {
+                                ChartUtilities.saveChartAsJPEG(lineChart, line, width, height);
+                                SVGUtils.writeToSVG(f, g2.getSVGElement());
+                            }
+                            catch (IOException e) {
+                                System.out.println(e);
+                            }
                         }
                     }
                 }
