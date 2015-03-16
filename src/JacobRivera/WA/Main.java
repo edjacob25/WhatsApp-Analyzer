@@ -197,6 +197,7 @@ public class Main extends Application {
         try{
             while ((line = v.readLine()) != null) {
                 i++;
+                //System.out.println(i);
                 if (!analizer.validLine(line))
                     System.out.println(i + " " + line);
                 else
