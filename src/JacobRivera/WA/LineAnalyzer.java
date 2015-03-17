@@ -24,11 +24,11 @@ public class LineAnalyzer {
         }
         System.out.println(monthRegex);
 
-        yearRegex = "[0-9]{4}";
+        yearRegex = "2[0-9]{3}";
     }
 
     public boolean validLine(String line){
-        if ((line.split("\\.").length < 2)||(line.split(":").length < 3)||(line.split("\\-").length < 2))
+        if ((line.split(":").length < 3)||(line.split("\\-").length < 2))
             return false;
         else
             return true;
@@ -64,20 +64,17 @@ public class LineAnalyzer {
 
     public Date getDate(String line){
         Date date = null;
-        String strDate;
-        String[] l = line.split("\\.");
-        strDate = l[0];
+        String strDate = line.split("-")[0];
         Pattern pattern;
         Matcher matcher;
         SimpleDateFormat st = new SimpleDateFormat("yyyy-MM-dd");
         //System.out.println(strDate);
-        //System.out.println(line);
 
         // Year
         String strYear;
         Calendar y = new GregorianCalendar();
-         pattern = Pattern.compile(yearRegex);
-        matcher = pattern.matcher(line);
+        pattern = Pattern.compile(yearRegex);
+        matcher = pattern.matcher(strDate);
         if (matcher.find())
             strYear = matcher.group();
         else
@@ -87,7 +84,7 @@ public class LineAnalyzer {
         int month = 0;
         String strMonth = "";
         pattern = Pattern.compile(monthRegex);
-        matcher = pattern.matcher(line);
+        matcher = pattern.matcher(strDate);
         if (matcher.find())
             strMonth = matcher.group();
         for (int i = 0; i<months.length; i++) {

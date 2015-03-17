@@ -3,12 +3,18 @@ A JavaFX application which analyzes the textfile of a Whatsapp conversation, cur
 
 ## Features
 - Message count
-- Average messages per people
+- Messages per people
+- Conversation percentage per people
 - Most talked day
-- most talked month
+- Most talked month
+- Daily messages' average
+- Graphs as JPGs and SVGs
 
 ## TODO
-- Add graphs
-- Add new regionalization
-- Refactor GetDate and ValidLine with regex
+- Improve graphs
+- Add new regionalizations
 - Most talked year
+- Finish transformation to regex
+- Add integration to SQLite to make a traceable history
+- Improve visuals
+- Messages' heuristic and grammatical analysis
