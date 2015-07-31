@@ -3,18 +3,22 @@ package JacobRivera.WA;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.Dataset;
 
-import java.text.ParseException;
+import java.sql.Statement;
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
  * Created by EdgarJacob on 01/03/2015.
+ * Copyright Jacob Rivera 2015
  */
 public class ConversationData {
     private Map<String,Integer> participants = new HashMap<String, Integer>();
     private Map<Date,String> messages = new HashMap<Date, String>();
     private SortedMap<Date,Integer> days = new TreeMap<Date, Integer>();
     private Map<String,Integer> months = new HashMap<String, Integer>();
+    private SortedMap<Date, Integer> totalDays = new TreeMap<Date,Integer>();
 
     public void addData(String participant, String message, Date date){
         Integer numMess = participants.get(participant);
@@ -26,15 +30,15 @@ public class ConversationData {
         messages.put(date,message);
     }
 
-    public String[] getParticipants(){
-        String[] parts = new String[participants.size()];
-        int i = 0;
-        for (String iterator : participants.keySet()) {
-            parts[i] = iterator;
-            i++;
+    public void createTotalDaysData() {
+        Date last = new Date(System.currentTimeMillis());
+        for (Date start = days.firstKey(); start.before(last); start.setTime(start.getTime() + 86400000)) {
+            System.out.println(start);
+            totalDays.put(start,(days.containsKey(start)) ? days.get(start): 0 );
         }
-        //participants.size();
-        return parts;
+    }
+    public Set<String> getParticipants(){
+        return participants.keySet();
     }
 
     public String getDates(){
@@ -53,11 +57,20 @@ public class ConversationData {
         return date;
     }
 
+    public Date getLastTalkedDay() {
+        Date date = null;
+        for (Date iterator : days.keySet()){
+            date = iterator;
+        }
+        return date;
+    }
+
     public String getMostTalkedMonth() {
         String mostalkedMonth = "";
         int msg = 0;
 
         for (String mt : months.keySet()) {
+            System.out.println(mt + ": " + months.get(mt));
             if (months.get(mt) > msg) {
                 msg = months.get(mt);
                 mostalkedMonth = mt;
@@ -71,7 +84,7 @@ public class ConversationData {
         Integer numMonth;
         for (Date iterator : days.keySet()){
             numMonth = months.get(sdf.format(iterator));
-            months.put(sdf.format(iterator),(numMonth == null) ? days.get(iterator) : numMonth + days.get(iterator));
+            months.put(sdf.format(iterator), (numMonth == null) ? days.get(iterator) : numMonth + days.get(iterator));
         }
     }
 
@@ -102,6 +115,7 @@ public class ConversationData {
     }
 
     public float getDailyAvg() {
+        System.out.println("Dias hablados: "+days.size());
         return (float) getTotalMessages() / days.size();
     }
 
@@ -114,4 +128,5 @@ public class ConversationData {
         }
         return dataset;
     }
+
 }
