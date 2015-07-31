@@ -73,17 +73,18 @@ public class Main extends Application {
 
                         if (data != null) {
                             data.createMonthsData();
+                            data.createTotalDaysData();
                             //participants.setFill();
                             SimpleDateFormat dayF = new SimpleDateFormat("dd-MM-yyyy");
 
-                            String[] part = data.getParticipants();
-                            participant1TF.setText(part[0]);
-                            participant2TF.setText(part[1]);
+                            Object[] part =data.getParticipants().toArray();
+                            participant1TF.setText((String)part[0]);
+                            participant2TF.setText((String)part[1]);
                             msgs.setText("Totales: "+data.getTotalMessages()+"");
-                            msg1.setText(data.getParticipantData(part[0])+"");
-                            msg2.setText(data.getParticipantData(part[1])+"");
-                            avg1.setText(data.getParticipantAverage(part[0])+"%");
-                            avg2.setText(data.getParticipantAverage(part[1])+"%");
+                            msg1.setText(data.getParticipantCount((String)part[0])+"");
+                            msg2.setText(data.getParticipantCount((String)part[1])+"");
+                            avg1.setText(data.getParticipantAverage((String)part[0])+"%");
+                            avg2.setText(data.getParticipantAverage((String)part[1])+"%");
 
                             Date day = data.getMostTalkedDay();
                             String mt = data.getMostTalkedMonth();
@@ -93,18 +94,21 @@ public class Main extends Application {
                             monthTF.setText(mt);
                             monthMsg.setText(data.getMonthData(mt)+"");
 
-                            JFreeChart line = ChartFactory.createLineChart("Mensajes por dia","Fechas","mensajes", (CategoryDataset) data.getLinearDataSet());
+                            JFreeChart days = ChartFactory.createLineChart("Mensajes por dia","Fechas","mensajes", (CategoryDataset) data.getDaysDataSet());
+                            JFreeChart totaldays = ChartFactory.createLineChart("Mensajes por dia","Fechas","mensajes", (CategoryDataset) data.getTotalDaysDataSet());
                             int width = 2000; /* Width of the image */
                             int height = 1000; /* Height of the image */
-                            File lineChart = new File( "char.jpeg" );
+                            File daysChart = new File( "dias.jpeg" );
+                            File todosChart = new File( "todosdias.jpeg" );
 
                             SVGGraphics2D g2 = new SVGGraphics2D(2000, 1000);
                             g2.setRenderingHint(JFreeChart.KEY_SUPPRESS_SHADOW_GENERATION, true);
                             Rectangle r = new Rectangle(0, 0, 2000, 1000);
-                            line.draw(g2, r);
+                            days.draw(g2, r);
                             File f = new File("char.svg");
                             try {
-                                ChartUtilities.saveChartAsJPEG(lineChart, line, width, height);
+                                ChartUtilities.saveChartAsJPEG(daysChart, days, width, height);
+                                ChartUtilities.saveChartAsJPEG(todosChart, totaldays, width, height);
                                 SVGUtils.writeToSVG(f, g2.getSVGElement());
                             }
                             catch (IOException e) {

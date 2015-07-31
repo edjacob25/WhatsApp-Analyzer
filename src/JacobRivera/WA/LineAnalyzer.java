@@ -22,12 +22,14 @@ public class LineAnalyzer {
             if (i!=months.length-1)
                 monthRegex = monthRegex + "|";
         }
+
+        monthRegex = "\\/[0-1][0-9]\\/";
         System.out.println(monthRegex);
 
         yearRegex = "2[0-9]{3}";
     }
 
-    public boolean validLine(String line){
+    public boolean validLine(String line)   {
         if ((line.split(":").length < 3)||(line.split("\\-").length < 2))
             return false;
         else
@@ -79,7 +81,6 @@ public class LineAnalyzer {
             strYear = matcher.group();
         else
             strYear = y.get(Calendar.YEAR) + "";
-
         // Month
         int month = 0;
         String strMonth = "";
@@ -94,12 +95,14 @@ public class LineAnalyzer {
 
         //Day
         try {
-            date = st.parse(strYear+"-"+month+"-"+strDate.split(" ")[0]);
+            //System.out.println(strYear + "  " + strMonth.substring(1,3) + "  "  +strDate.substring(0,2) );
+            //date = st.parse(strYear+"-"+month+"-"+strDate.split(" ")[0]);
+            date = st.parse(strYear+"-"+strMonth.substring(1,3)+"-"+strDate.substring(0,2));
         }
         catch (ParseException e) {
             System.out.println(line);
         }
-
+        //System.out.println(date);
         return date;
     }
 

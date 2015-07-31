@@ -14,6 +14,7 @@ public class ConversationData {
     private Map<String,Integer> participants = new HashMap<String, Integer>();
     private Map<Date,String> messages = new HashMap<Date, String>();
     private SortedMap<Date,Integer> days = new TreeMap<Date, Integer>();
+    private SortedMap<Date,Integer> totalDays = new TreeMap<Date, Integer>();
     private Map<String,Integer> months = new HashMap<String, Integer>();
 
     public void addData(String participant, String message, Date date){
@@ -26,19 +27,28 @@ public class ConversationData {
         messages.put(date,message);
     }
 
-    public String[] getParticipants(){
-        String[] parts = new String[participants.size()];
-        int i = 0;
-        for (String iterator : participants.keySet()) {
-            parts[i] = iterator;
-            i++;
+    public void createMonthsData() {
+        SimpleDateFormat sdf = new SimpleDateFormat("MM-yyyy");
+        Integer numMonth;
+        for (Date iterator : days.keySet()){
+            numMonth = months.get(sdf.format(iterator));
+            months.put(sdf.format(iterator),(numMonth == null) ? days.get(iterator) : numMonth + days.get(iterator));
         }
-        //participants.size();
-        return parts;
     }
 
-    public String getDates(){
-        return days.toString();
+    public void createTotalDaysData() {
+        Date iterator =  new Date(days.firstKey().getTime());
+        Date last = new Date(System.currentTimeMillis());
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(iterator);
+        for (; iterator.before(last); calendar.add(Calendar.DAY_OF_YEAR, 1)) {
+            iterator = calendar.getTime();
+            totalDays.put(iterator, (days.containsKey(iterator)) ? days.get(iterator): 0 );
+        }
+    }
+
+    public Set<String> getParticipants(){
+        return participants.keySet();
     }
 
     public Date getMostTalkedDay(){
@@ -66,15 +76,6 @@ public class ConversationData {
         return mostalkedMonth;
     }
 
-    public void createMonthsData() {
-        SimpleDateFormat sdf = new SimpleDateFormat("MM-yyyy");
-        Integer numMonth;
-        for (Date iterator : days.keySet()){
-            numMonth = months.get(sdf.format(iterator));
-            months.put(sdf.format(iterator),(numMonth == null) ? days.get(iterator) : numMonth + days.get(iterator));
-        }
-    }
-
     public int getDayData(Date date) {
         return days.get(date);
     }
@@ -83,15 +84,8 @@ public class ConversationData {
         return months.get(month);
     }
 
-    public int getParticipantData(String pt) {
+    public int getParticipantCount(String pt) {
         return participants.get(pt);
-    }
-
-    public float getParticipantAverage(String pt) {
-        float avg;
-        int tot = getTotalMessages();
-        avg =(float) (participants.get(pt)*100.0)/tot;
-        return avg;
     }
 
     public int getTotalMessages(){
@@ -101,11 +95,20 @@ public class ConversationData {
         return total;
     }
 
+    public float getParticipantAverage(String pt) {
+        int tot = getTotalMessages();
+        return (float) (participants.get(pt)*100.0)/tot;
+    }
+
     public float getDailyAvg() {
         return (float) getTotalMessages() / days.size();
     }
 
-    public Dataset getLinearDataSet() {
+    public float getTotalDailyAvg() {
+        return (float) getTotalMessages() / totalDays.size();
+    }
+
+    public Dataset getDaysDataSet() {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
         for (Date iterator : days.keySet()) {
@@ -114,4 +117,15 @@ public class ConversationData {
         }
         return dataset;
     }
+
+    public Dataset getTotalDaysDataSet() {
+        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+
+        for (Date iterator : totalDays.keySet()) {
+            dataset.addValue(totalDays.get(iterator),"Mensajes por dia",sdf.format(iterator));
+        }
+        return dataset;
+    }
+
 }

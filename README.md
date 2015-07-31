@@ -8,10 +8,15 @@ A JavaFX application which analyzes the textfile of a Whatsapp conversation, cur
 - Most talked day
 - Most talked month
 - Daily messages' average
-- Graphs as JPGs and SVGs
+- Daily messages average including days not talking
+- Day Graphs as JPGs and SVGs
 
 ## TODO
 - Improve graphs
+- Words total
+- Words per message average
+- Emoticons per message
+- Time since talking started
 - Add new regionalizations
 - Most talked year
 - Finish transformation to regex
