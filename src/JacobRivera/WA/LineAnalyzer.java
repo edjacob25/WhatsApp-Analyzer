@@ -17,15 +17,15 @@ public class LineAnalyzer {
     private String monthRegex = "", yearRegex = "";
 
     public LineAnalyzer() {
-        for (int i= 0;i<months.length;i++){
+        
+        /* Used in old regionalizations*/
+        /*for (int i= 0;i<months.length;i++){
             monthRegex = monthRegex + months[i];
             if (i!=months.length-1)
                 monthRegex = monthRegex + "|";
-        }
+        }*/
 
         monthRegex = "\\/[0-1][0-9]\\/";
-        System.out.println(monthRegex);
-
         yearRegex = "2[0-9]{3}";
     }
 
@@ -33,7 +33,10 @@ public class LineAnalyzer {
         if ((line.split(":").length < 3)||(line.split("\\-").length < 2))
             return false;
         else
-            return true;
+            if (getDate(line) != null)
+                return true;
+            else
+                return false;
     }
 
     public String getMessage(String line){
@@ -43,7 +46,7 @@ public class LineAnalyzer {
             message = parts[1].split(":")[1];
         }
         catch (ArrayIndexOutOfBoundsException e){
-            System.out.println("Linea de mensaje");
+            System.err.println("Linea de mensaje");
             message = line;
         }
 
@@ -57,10 +60,9 @@ public class LineAnalyzer {
             participant = parts[1].split(":")[0];
         }
         catch (ArrayIndexOutOfBoundsException e){
-            System.out.println("No hay participante en la linea");
+            System.err.println("No hay participante en la linea");
             participant = "NO_PART";
         }
-
         return participant;
     }
 
@@ -70,7 +72,6 @@ public class LineAnalyzer {
         Pattern pattern;
         Matcher matcher;
         SimpleDateFormat st = new SimpleDateFormat("yyyy-MM-dd");
-        //System.out.println(strDate);
 
         // Year
         String strYear;
@@ -95,14 +96,14 @@ public class LineAnalyzer {
 
         //Day
         try {
-            //System.out.println(strYear + "  " + strMonth.substring(1,3) + "  "  +strDate.substring(0,2) );
+            /* Used in old regionalizations */
             //date = st.parse(strYear+"-"+month+"-"+strDate.split(" ")[0]);
             date = st.parse(strYear+"-"+strMonth.substring(1,3)+"-"+strDate.substring(0,2));
         }
-        catch (ParseException e) {
-            System.out.println(line);
+        catch (Exception e){
+            System.err.println(e);
+            return null;
         }
-        //System.out.println(date);
         return date;
     }
 

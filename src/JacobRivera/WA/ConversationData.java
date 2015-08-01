@@ -79,7 +79,6 @@ public class ConversationData {
         int msg = 0;
 
         for (String mt : months.keySet()) {
-            System.out.println(mt + ": " + months.get(mt));
             if (months.get(mt) > msg) {
                 msg = months.get(mt);
                 mostalkedMonth = mt;
@@ -130,7 +129,6 @@ public class ConversationData {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
         for (Date iterator : days.keySet()) {
-            //System.out.println(days.get(iterator) + iterator.toString());
             dataset.addValue(days.get(iterator),"Mensajes por dia",sdf.format(iterator));
         }
         return dataset;

@@ -35,7 +35,7 @@ public class Main extends Application {
             layout.setCenter(ap);
         }
         catch (IOException ioe){
-            System.out.println(ioe);
+            System.err.println(ioe);
         }
     }
 
@@ -50,7 +50,7 @@ public class Main extends Application {
             primaryStage.show();
         }
         catch (IOException ioe){
-            System.out.println(ioe);
+            System.err.println(ioe);
         }
     }
 

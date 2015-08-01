@@ -16,7 +16,6 @@ A JavaFX application which analyzes the textfile of a Whatsapp conversation, cur
 - Words total
 - Words per message average
 - Emoticons per message
-- Time since talking started
 - Add new regionalizations
 - Most talked year
 - Finish transformation to regex
