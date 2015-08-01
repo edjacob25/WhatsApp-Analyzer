@@ -3,12 +3,15 @@ package JacobRivera.WA;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.Dataset;
 
-import java.text.ParseException;
+import java.sql.Statement;
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
  * Created by EdgarJacob on 01/03/2015.
+ * Copyright Jacob Rivera 2015
  */
 public class ConversationData {
     private Map<String,Integer> participants = new HashMap<String, Integer>();
@@ -37,13 +40,13 @@ public class ConversationData {
     }
 
     public void createTotalDaysData() {
-        Date iterator =  new Date(days.firstKey().getTime());
+        Date iterator = new Date(days.firstKey().getTime());
         Date last = new Date(System.currentTimeMillis());
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(iterator);
         for (; iterator.before(last); calendar.add(Calendar.DAY_OF_YEAR, 1)) {
             iterator = calendar.getTime();
-            totalDays.put(iterator, (days.containsKey(iterator)) ? days.get(iterator): 0 );
+            totalDays.put(iterator, (days.containsKey(iterator)) ? days.get(iterator) : 0);
         }
     }
 
@@ -63,11 +66,20 @@ public class ConversationData {
         return date;
     }
 
+    public Date getLastTalkedDay() {
+        Date date = null;
+        for (Date iterator : days.keySet()){
+            date = iterator;
+        }
+        return date;
+    }
+
     public String getMostTalkedMonth() {
         String mostalkedMonth = "";
         int msg = 0;
 
         for (String mt : months.keySet()) {
+            System.out.println(mt + ": " + months.get(mt));
             if (months.get(mt) > msg) {
                 msg = months.get(mt);
                 mostalkedMonth = mt;
@@ -95,9 +107,15 @@ public class ConversationData {
         return total;
     }
 
-    public float getParticipantAverage(String pt) {
+    public int getDaysTalked() {
+        return totalDays.size();
+    }
+
+    public float getParticipantShare(String pt) {
+        float avg;
         int tot = getTotalMessages();
-        return (float) (participants.get(pt)*100.0)/tot;
+        avg =(float) (participants.get(pt)*100.0)/tot;
+        return avg;
     }
 
     public float getDailyAvg() {
