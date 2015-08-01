@@ -1,27 +1,67 @@
 package JacobRivera.WA;
 
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartUtilities;
-import org.jfree.chart.JFreeChart;
-import org.jfree.data.category.CategoryDataset;
-import org.jfree.graphics2d.svg.SVGGraphics2D;
-import org.jfree.graphics2d.svg.SVGUtils;
 
-import java.awt.*;
 import java.io.*;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.LinkedList;
 import java.util.Set;
 
-public class Controller implements EventHandler<ActionEvent>{
+public class Controller{
 
-    @Override
-    public void handle(ActionEvent actionEvent) {
-        ConversationData data = null;
+    @FXML
+    private Button myButton;
+    @FXML
+    private GridPane myGrid;
+    @FXML
+    private GridPane myGrid2;
+    @FXML
+    private Label daysLabel;
+
+    @FXML
+    private void initialize() {
+        myButton.setOnAction((event) -> {
+            ConversationData data = null;
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Dato");
+            fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Archivos", "*.txt"));
+            File file = fileChooser.showOpenDialog(myButton.getScene().getWindow());
+            if (file != null) {
+                data = openFile(file);
+            }
+
+            if (data != null) {
+                data.createMonthsData();
+                //data.createTotalDaysData();
+                //participants.setFill();
+                SimpleDateFormat dayF = new SimpleDateFormat("dd-MM-yyyy");
+                int i = 0;
+                Set<String> partSet = data.getParticipants();
+                for (String s : partSet) {
+                    myGrid.add(new Label(s),0,i);
+                    myGrid.add(new Label(data.getParticipantData(s) + ""),1,i);
+                    myGrid.add(new Label(data.getParticipantShare(s) + "%"), 2, i);
+                    //avg.setText(data.getParticipantShare(s));
+                    i++;
+
+                }
+                myGrid2.add(new Label(data.getDailyAvg() + ""),0,1);
+                myGrid2.add(new Label(""),1,1);
+                myGrid2.add(new Label(dayF.format(data.getMostTalkedDay())),0,3);
+                myGrid2.add(new Label(data.getDayData(data.getMostTalkedDay()) + ""),1,3);
+                myGrid2.add(new Label(data.getMostTalkedMonth()),0,5);
+                myGrid2.add(new Label(data.getMonthData(data.getMostTalkedMonth()) + ""),1,5);
+                daysLabel.setText("Días desde que se inició el chat: " );
+            }
+        });
+    }
+
+//    @Override
+//    public void handle(ActionEvent actionEvent) {
+//        ConversationData data = null;
         /*fileChooser.setTitle("Dato");
         fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Archivos", "*.txt"));
         File file = fileChooser.showOpenDialog(primaryStage);
@@ -40,7 +80,7 @@ public class Controller implements EventHandler<ActionEvent>{
             for (String s : partSet) {
                 name.setText(s);
                 msg.setText(data.getParticipantData(s);
-                avg.setText(data.getParticipantAverage(s));
+                avg.setText(data.getParticipantShare(s));
 
             }
             Date day = data.getMostTalkedDay();
@@ -69,7 +109,7 @@ public class Controller implements EventHandler<ActionEvent>{
                 System.out.println(e);
             }
         }*/
-    }
+    //}
 
     private ConversationData openFile(File arg) {
         FileReader in = null;

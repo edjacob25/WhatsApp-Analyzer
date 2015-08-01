@@ -37,6 +37,7 @@ public class ConversationData {
             totalDays.put(start,(days.containsKey(start)) ? days.get(start): 0 );
         }
     }
+
     public Set<String> getParticipants(){
         return participants.keySet();
     }
@@ -100,7 +101,7 @@ public class ConversationData {
         return participants.get(pt);
     }
 
-    public float getParticipantAverage(String pt) {
+    public float getParticipantShare(String pt) {
         float avg;
         int tot = getTotalMessages();
         avg =(float) (participants.get(pt)*100.0)/tot;
