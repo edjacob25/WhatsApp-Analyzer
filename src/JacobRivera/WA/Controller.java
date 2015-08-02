@@ -1,8 +1,14 @@
 package JacobRivera.WA;
 
 import javafx.fxml.FXML;
+import javafx.scene.Node;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
 import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
 import org.jfree.chart.ChartFactory;
@@ -23,7 +29,10 @@ public class Controller{
     @FXML
     private GridPane myGrid2;
     @FXML
-    private Label daysLabel;
+    private ImageView graph;
+    @FXML
+    private ScrollPane scroll;
+
 
     @FXML
     private void initialize() {
@@ -41,25 +50,36 @@ public class Controller{
                 data.createMonthsData();
                 data.createTotalDaysData();
                 SimpleDateFormat dayF = new SimpleDateFormat("dd-MM-yyyy");
-                int i = 0;
+
+                /* Remove data from old operation*/
+                myGrid.getChildren().remove(0,myGrid.getChildren().size());
+
+                /* Add new data*/
+
                 Set<String> partSet = data.getParticipants();
+                int i = 0;
                 for (String s : partSet) {
                     myGrid.add(new Label(s),0,i);
                     myGrid.add(new Label(data.getParticipantCount(s) + ""),1,i);
-                    myGrid.add(new Label(String.format("%.2f", data.getParticipantShare(s) ) + "%"), 2, i);
+                    myGrid.add(new Label(String.format("%.2f", data.getParticipantShare(s)) + "%"), 2, i);
                     i++;
-
                 }
-                myGrid2.add(new Label(data.getDailyAvg() + ""),0,1);
-                myGrid2.add(new Label(data.getTotalDailyAvg() + ""),1,1);
-                myGrid2.add(new Label(dayF.format(data.getMostTalkedDay())),0,3);
-                myGrid2.add(new Label(data.getDayData(data.getMostTalkedDay()) + ""),1,3);
-                myGrid2.add(new Label(data.getMostTalkedMonth()),0,5);
-                myGrid2.add(new Label(data.getMonthData(data.getMostTalkedMonth()) + ""), 1, 5);
-                daysLabel.setText("Dias desde que se inicio el chat: " + data.getDaysTalked() );
+
+                /* Remove data from old operation */
+                myGrid2.getChildren().remove(8,myGrid2.getChildren().size());
+
+                /* Add new Data */
+                myGrid2.add(new Label(data.getDaysTalked() + ""), 0, 1);
+                myGrid2.add(new Label(data.getTotalMessages() + ""), 1, 1);
+                myGrid2.add(new Label(data.getDailyAvg() + ""),0,3);
+                myGrid2.add(new Label(data.getTotalDailyAvg() + ""),1,3);
+                myGrid2.add(new Label(dayF.format(data.getMostTalkedDay())),0,5);
+                myGrid2.add(new Label(data.getDayData(data.getMostTalkedDay()) + ""),1,5);
+                myGrid2.add(new Label(data.getMostTalkedMonth()),0,7);
+                myGrid2.add(new Label(data.getMonthData(data.getMostTalkedMonth()) + ""), 1, 7);
 
                 JFreeChart days = ChartFactory.createLineChart("Mensajes por dia","Fechas","mensajes", (CategoryDataset) data.getDaysDataSet());
-                JFreeChart totaldays = ChartFactory.createLineChart("Mensajes por dia", "Fechas", "mensajes", (CategoryDataset) data.getTotalDaysDataSet());
+                JFreeChart totaldays = ChartFactory.createLineChart("Mensajes por dia entre", "Fechas", "mensajes", (CategoryDataset) data.getTotalDaysDataSet());
                 int width = 2000; /* Width of the image */
                 int height = 1000; /* Height of the image */
                 File daysChart = new File( "dias.jpeg" );
@@ -68,6 +88,9 @@ public class Controller{
                 try {
                     ChartUtilities.saveChartAsJPEG(daysChart, days, width, height);
                     ChartUtilities.saveChartAsJPEG(todosChart, totaldays, width, height);
+                    //graph.setImage(new Image("todosdias.jpeg"));
+                    //scroll.setContent(new ImageView(new Image("todosdias.jpeg")));
+                    //graph.snapshot(new SnapshotParameters(), new WritableImage(1, 1));
                 }
                 catch (IOException e) {
                     System.out.println(e);

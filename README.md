@@ -1,5 +1,6 @@
 # WhatsApp-Analyzer
-A JavaFX application which analyzes the textfile of a Whatsapp conversation, currently just working with the exportation format of Spanish(USA)
+A JavaFX application which analyzes the textfile of a Whatsapp conversation, currently just working with the format of
+Spanish exports (dd/MM/yyy), not sure it will work with any other export format.
 
 ## Features
 - Message count
@@ -11,8 +12,22 @@ A JavaFX application which analyzes the textfile of a Whatsapp conversation, cur
 - Daily messages average including days not talking
 - Day Graphs as JPGs and SVGs
 
+## Build
+
+WhatsApp-Analyzer requires Java 8, JavaFx 8 and JFreeChart, build as normal. tested with IntelliJ IDEA.
+
+## How to use
+Email yourself the conversation you want to analyze   
+- Open WhatsApp   
+- Choose the conversation  
+- Menu -> More   
+- Send chat by email   
+
+Download it and open the .txt file with the program, the graphs are located at the program rute
+
 ## TODO
 - Improve graphs
+- Better building
 - Words total
 - Words per message average
 - Emoticons per message
