@@ -1,6 +1,5 @@
 package JacobRivera.WA;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -9,22 +8,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Created by EdgarJacob on 01/03/2015.
+ * Created by Jacob Rivera on 01/03/2015.
+ *
  */
 public class LineAnalyzer {
 
-    private static String[] months = {"ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"};
     private String monthRegex = "", yearRegex = "";
 
     public LineAnalyzer() {
-        
-        /* Used in old regionalizations*/
-        /*for (int i= 0;i<months.length;i++){
-            monthRegex = monthRegex + months[i];
-            if (i!=months.length-1)
-                monthRegex = monthRegex + "|";
-        }*/
-
         monthRegex = "\\/[0-1][0-9]\\/";
         yearRegex = "2[0-9]{3}";
     }
@@ -33,10 +24,7 @@ public class LineAnalyzer {
         if ((line.split(":").length < 3)||(line.split("\\-").length < 2))
             return false;
         else
-            if (getDate(line) != null)
-                return true;
-            else
-                return false;
+            return getDate(line) != null;
     }
 
     public String getMessage(String line){
@@ -83,21 +71,14 @@ public class LineAnalyzer {
         else
             strYear = y.get(Calendar.YEAR) + "";
         // Month
-        int month = 0;
         String strMonth = "";
         pattern = Pattern.compile(monthRegex);
         matcher = pattern.matcher(strDate);
         if (matcher.find())
             strMonth = matcher.group();
-        for (int i = 0; i<months.length; i++) {
-            if (strMonth.equals(months[i]))
-                month = i+1;
-        }
 
         //Day
         try {
-            /* Used in old regionalizations */
-            //date = st.parse(strYear+"-"+month+"-"+strDate.split(" ")[0]);
             date = st.parse(strYear+"-"+strMonth.substring(1,3)+"-"+strDate.substring(0,2));
         }
         catch (Exception e){
@@ -107,4 +88,20 @@ public class LineAnalyzer {
         return date;
     }
 
+    public String getTime(String line){
+        String s = "";
+        String strTime = line.split("-")[0].split(",")[1].split(" ")[1];
+        String strHour = strTime.split(":")[0];
+        int hour = Integer.parseInt(strHour);
+        if (hour >=1 && hour<= 5)
+            s = "madrugada";
+        else if (hour >=6 && hour<= 11)
+            s = "ma"+"\u00F1"+"ana";
+        else if (hour >= 12 && hour <= 18 )
+            s = "tarde";
+        else
+            s = "noche";
+
+        return s;
+    }
 }

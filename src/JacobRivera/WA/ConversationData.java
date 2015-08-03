@@ -1,11 +1,10 @@
 package JacobRivera.WA;
 
+import javafx.scene.chart.PieChart;
+import javafx.scene.chart.XYChart;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.Dataset;
 
-import java.sql.Statement;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -15,19 +14,29 @@ import java.util.*;
  */
 public class ConversationData {
     private Map<String,Integer> participants = new HashMap<String, Integer>();
-    private Map<Date,String> messages = new HashMap<Date, String>();
+    private Map<String, Integer> participantsWords = new HashMap<String, Integer>();
+    private List<String> messages = new ArrayList<String>();
     private SortedMap<Date,Integer> days = new TreeMap<Date, Integer>();
     private SortedMap<Date,Integer> totalDays = new TreeMap<Date, Integer>();
     private Map<String,Integer> months = new HashMap<String, Integer>();
+    private Map<String, Integer> timeofDay = new HashMap<String, Integer>();
 
-    public void addData(String participant, String message, Date date){
+    public void addData(String participant, String message, Date date, String time){
         Integer numMess = participants.get(participant);
         participants.put(participant,(numMess == null) ? 1: numMess + 1);
 
         Integer numDay = days.get(date);
         days.put(date,(numDay == null) ? 1: numDay + 1);
 
-        messages.put(date,message);
+        /* -1 added for the first space at the start */
+        Integer wordsAcc = participantsWords.get(participant);
+        int words = message.split(" ").length - 1;
+        participantsWords.put(participant,(wordsAcc == null) ? words : wordsAcc + words);
+
+        messages.add(message);
+
+        Integer timeCount = timeofDay.get(time);
+        timeofDay.put(time,(timeCount == null) ? 1 :timeCount + 1 );
     }
 
     public void createMonthsData() {
@@ -95,10 +104,6 @@ public class ConversationData {
         return months.get(month);
     }
 
-    public int getParticipantCount(String pt) {
-        return participants.get(pt);
-    }
-
     public int getTotalMessages(){
         int total = 0;
         for (String iterator : participants.keySet())
@@ -110,11 +115,19 @@ public class ConversationData {
         return totalDays.size();
     }
 
+    public int getParticipantCount(String pt) {
+        return participants.get(pt);
+    }
+
     public float getParticipantShare(String pt) {
         float avg;
         int tot = getTotalMessages();
         avg =(float) (participants.get(pt)*100.0)/tot;
         return avg;
+    }
+
+    public float getWordsAvg(String pt) {
+        return (float) participantsWords.get(pt) / participants.get(pt);
     }
 
     public float getDailyAvg() {
@@ -125,11 +138,49 @@ public class ConversationData {
         return (float) getTotalMessages() / totalDays.size();
     }
 
+    public List<String> getMessagesContent(){
+        return messages;
+    }
+
+    public List<XYChart.Data<String, Integer>> getChartDaysData(){
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        List<XYChart.Data<String, Integer>> data = new ArrayList<>();
+        for (Date date : days.keySet()) {
+            data.add(new XYChart.Data(sdf.format(date),days.get(date)));
+        }
+        return data;
+    }
+
+    public List<XYChart.Data<String, Integer>> getChartAllDaysData(){
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        List<XYChart.Data<String, Integer>> data = new ArrayList<>();
+        for (Date date : totalDays.keySet()) {
+            data.add(new XYChart.Data(sdf.format(date), totalDays.get(date)));
+        }
+        return data;
+    }
+
+    public List<PieChart.Data> getChartParticipantsData(){
+        List<PieChart.Data> data = new ArrayList<>();
+        for (String s : participants.keySet()) {
+            data.add(new PieChart.Data(s, getParticipantShare(s)));
+        }
+        return data;
+    }
+
+    public List<PieChart.Data> getChartTimeData(){
+        List<PieChart.Data> data = new ArrayList<>();
+        for (String s : timeofDay.keySet()) {
+            data.add(new PieChart.Data(s, timeofDay.get(s)));
+        }
+        return data;
+    }
+
     public Dataset getDaysDataSet() {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
         for (Date iterator : days.keySet()) {
-            dataset.addValue(days.get(iterator),"Mensajes por dia",sdf.format(iterator));
+            dataset.addValue(days.get(iterator), "Mensajes por dia", sdf.format(iterator));
         }
         return dataset;
     }

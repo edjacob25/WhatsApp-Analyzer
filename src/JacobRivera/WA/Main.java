@@ -30,7 +30,7 @@ public class Main extends Application {
         try {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(Main.class.getResource("view/view1.fxml"));
-            AnchorPane ap = (AnchorPane) loader.load();
+            AnchorPane ap = loader.load();
 
             layout.setCenter(ap);
         }
@@ -53,7 +53,6 @@ public class Main extends Application {
             System.err.println(ioe);
         }
     }
-
 
     public static void main(String[] args) {
         launch(args);
